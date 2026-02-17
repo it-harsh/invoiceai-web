@@ -1,10 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useExpenses, useApproveExpense, useRejectExpense } from "@/hooks/use-expenses";
+import { useExpenses, useApproveExpense, useRejectExpense, useCreateExpense } from "@/hooks/use-expenses";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/api-client";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -12,6 +16,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -23,7 +34,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Check, X, Search, Download, Plus } from "lucide-react";
 import { toast } from "sonner";
-import Link from "next/link";
+import type { Category } from "@/types/api";
 
 function formatCurrency(amount: number, currency = "USD") {
   return new Intl.NumberFormat("en-US", { style: "currency", currency }).format(amount);
@@ -41,6 +52,12 @@ export default function ExpensesPage() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<string>("");
   const [page, setPage] = useState(0);
+  const [addOpen, setAddOpen] = useState(false);
+  const [vendor, setVendor] = useState("");
+  const [amount, setAmount] = useState("");
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [description, setDescription] = useState("");
+  const [categoryId, setCategoryId] = useState("");
 
   const { data, isLoading } = useExpenses({
     search: search || undefined,
@@ -49,8 +66,14 @@ export default function ExpensesPage() {
     size: "20",
   });
 
+  const { data: categories } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => api.get<Category[]>("/categories"),
+  });
+
   const approve = useApproveExpense();
   const reject = useRejectExpense();
+  const createExpense = useCreateExpense();
 
   function handleApprove(id: string) {
     approve.mutate(id, {
@@ -80,10 +103,86 @@ export default function ExpensesPage() {
               Export CSV
             </a>
           </Button>
-          <Button size="sm">
-            <Plus className="h-4 w-4 mr-2" />
-            Add Expense
-          </Button>
+          <Dialog open={addOpen} onOpenChange={setAddOpen}>
+            <DialogTrigger asChild>
+              <Button size="sm">
+                <Plus className="h-4 w-4 mr-2" />
+                Add Expense
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add Manual Expense</DialogTitle>
+              </DialogHeader>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  createExpense.mutate(
+                    {
+                      vendorName: vendor,
+                      amount: parseFloat(amount),
+                      date,
+                      description: description || undefined,
+                      categoryId: categoryId || undefined,
+                      currency: "USD",
+                    },
+                    {
+                      onSuccess: () => {
+                        toast.success("Expense added");
+                        setAddOpen(false);
+                        setVendor("");
+                        setAmount("");
+                        setDescription("");
+                        setCategoryId("");
+                      },
+                      onError: () => toast.error("Failed to add expense"),
+                    }
+                  );
+                }}
+                className="space-y-4"
+              >
+                <div className="space-y-2">
+                  <Label htmlFor="vendor">Vendor Name</Label>
+                  <Input id="vendor" value={vendor} onChange={(e) => setVendor(e.target.value)} placeholder="e.g. Amazon" required />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="amount">Amount ($)</Label>
+                    <Input id="amount" type="number" step="0.01" min="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="0.00" required />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="date">Date</Label>
+                    <Input id="date" type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="category">Category</Label>
+                  <Select value={categoryId} onValueChange={setCategoryId}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories?.map((cat) => (
+                        <SelectItem key={cat.id} value={cat.id}>
+                          <div className="flex items-center gap-2">
+                            <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: cat.color }} />
+                            {cat.name}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="desc">Description (optional)</Label>
+                  <Textarea id="desc" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="What was this expense for?" />
+                </div>
+                <Button type="submit" className="w-full" disabled={createExpense.isPending}>
+                  {createExpense.isPending ? "Adding..." : "Add Expense"}
+                </Button>
+              </form>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
 
