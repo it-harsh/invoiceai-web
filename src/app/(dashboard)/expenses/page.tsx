@@ -32,7 +32,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Check, X, Search, Download, Plus } from "lucide-react";
+import { CheckCircle, XCircle, Search, Download, Plus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import type { Category } from "@/types/api";
 
@@ -53,6 +53,7 @@ export default function ExpensesPage() {
   const [status, setStatus] = useState<string>("");
   const [page, setPage] = useState(0);
   const [addOpen, setAddOpen] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const [vendor, setVendor] = useState("");
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
@@ -92,16 +93,43 @@ export default function ExpensesPage() {
     );
   }
 
+  async function handleExport() {
+    setExporting(true);
+    try {
+      const res = await fetch("/api/expenses/export");
+      if (!res.ok) {
+        toast.error("Export failed — no data to export or server error");
+        return;
+      }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `expenses-${new Date().toISOString().split("T")[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      toast.success("CSV exported successfully");
+    } catch {
+      toast.error("Export failed — check your connection");
+    } finally {
+      setExporting(false);
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Expenses</h1>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" asChild>
-            <a href="/api/expenses/export" download>
+          <Button variant="outline" size="sm" onClick={handleExport} disabled={exporting}>
+            {exporting ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
               <Download className="h-4 w-4 mr-2" />
-              Export CSV
-            </a>
+            )}
+            {exporting ? "Exporting..." : "Export CSV"}
           </Button>
           <Dialog open={addOpen} onOpenChange={setAddOpen}>
             <DialogTrigger asChild>
@@ -243,12 +271,12 @@ export default function ExpensesPage() {
                   <TableCell className="text-sm">{expense.date}</TableCell>
                   <TableCell className="font-medium">{expense.vendorName}</TableCell>
                   <TableCell>
-                    {expense.category && (
+                    {expense.category ? (
                       <div className="flex items-center gap-2">
                         <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: expense.category.color }} />
                         <span className="text-sm">{expense.category.name}</span>
                       </div>
-                    )}
+                    ) : null}
                   </TableCell>
                   <TableCell className="text-right font-mono">
                     {formatCurrency(expense.amount, expense.currency)}
@@ -259,23 +287,37 @@ export default function ExpensesPage() {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    {expense.aiConfidence != null && (
+                    {expense.aiConfidence != null ? (
                       <span className="text-sm text-muted-foreground">
                         {(expense.aiConfidence * 100).toFixed(0)}%
                       </span>
-                    )}
+                    ) : null}
                   </TableCell>
                   <TableCell className="text-right">
-                    {expense.status === "NEEDS_REVIEW" && (
-                      <div className="flex justify-end gap-1">
-                        <Button size="icon" variant="outline" className="h-8 w-8 border-green-200 bg-green-50 text-green-700 hover:bg-green-100 dark:border-green-800 dark:bg-green-950 dark:text-green-400 dark:hover:bg-green-900" onClick={() => handleApprove(expense.id)}>
-                          <Check className="h-4 w-4" />
+                    {expense.status === "NEEDS_REVIEW" ? (
+                      <div className="flex justify-end gap-1.5">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-8 gap-1.5 border-green-200 bg-green-50 text-green-700 hover:bg-green-100 dark:border-green-800 dark:bg-green-950 dark:text-green-400 dark:hover:bg-green-900"
+                          onClick={() => handleApprove(expense.id)}
+                          disabled={approve.isPending}
+                        >
+                          <CheckCircle className="h-3.5 w-3.5" />
+                          Approve
                         </Button>
-                        <Button size="icon" variant="outline" className="h-8 w-8 border-red-200 bg-red-50 text-red-700 hover:bg-red-100 dark:border-red-800 dark:bg-red-950 dark:text-red-400 dark:hover:bg-red-900" onClick={() => handleReject(expense.id)}>
-                          <X className="h-4 w-4" />
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-8 gap-1.5 border-red-200 bg-red-50 text-red-700 hover:bg-red-100 dark:border-red-800 dark:bg-red-950 dark:text-red-400 dark:hover:bg-red-900"
+                          onClick={() => handleReject(expense.id)}
+                          disabled={reject.isPending}
+                        >
+                          <XCircle className="h-3.5 w-3.5" />
+                          Reject
                         </Button>
                       </div>
-                    )}
+                    ) : null}
                   </TableCell>
                 </TableRow>
               ))
@@ -284,7 +326,7 @@ export default function ExpensesPage() {
         </Table>
       </div>
 
-      {data && data.totalPages > 1 && (
+      {data && data.totalPages > 1 ? (
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
             Showing {data.content.length} of {data.totalElements} expenses
@@ -298,7 +340,7 @@ export default function ExpensesPage() {
             </Button>
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
