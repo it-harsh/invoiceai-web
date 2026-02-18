@@ -75,7 +75,7 @@ export function SummaryCards() {
             {card.change !== undefined && (
               <p
                 className={`text-xs mt-1 ${
-                  card.change >= 0 ? "text-green-600" : "text-red-600"
+                  card.change >= 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
                 }`}
               >
                 {card.change >= 0 ? "+" : ""}

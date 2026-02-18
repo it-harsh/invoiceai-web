@@ -13,6 +13,7 @@ import {
 import { useAuthStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/constants";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const navItems = [
   { href: ROUTES.dashboard, label: "Dashboard", icon: LayoutDashboard },
@@ -63,6 +64,9 @@ export function Sidebar() {
       </nav>
 
       <div className="border-t p-4">
+        <div className="flex items-center justify-between mb-3 px-3">
+          <ThemeToggle />
+        </div>
         <div className="flex items-center gap-3 mb-3 px-3">
           <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-sm font-medium text-primary">
             {user?.fullName?.charAt(0) || "U"}

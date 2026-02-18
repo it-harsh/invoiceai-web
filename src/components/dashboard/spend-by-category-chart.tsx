@@ -5,6 +5,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useSpendByCategory } from "@/hooks/use-dashboard";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
+const tooltipStyle = {
+  backgroundColor: "var(--card)",
+  borderColor: "var(--border)",
+  borderRadius: "8px",
+  color: "var(--card-foreground)",
+  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+  padding: "8px 12px",
+};
+
 export function SpendByCategoryChart() {
   const { data, isLoading } = useSpendByCategory();
 
@@ -59,6 +68,9 @@ export function SpendByCategoryChart() {
                 ))}
               </Pie>
               <Tooltip
+                contentStyle={tooltipStyle}
+                labelStyle={{ color: "var(--muted-foreground)" }}
+                itemStyle={{ color: "var(--card-foreground)" }}
                 formatter={(value) =>
                   new Intl.NumberFormat("en-US", {
                     style: "currency",

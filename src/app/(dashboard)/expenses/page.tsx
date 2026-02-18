@@ -268,10 +268,10 @@ export default function ExpensesPage() {
                   <TableCell className="text-right">
                     {expense.status === "NEEDS_REVIEW" && (
                       <div className="flex justify-end gap-1">
-                        <Button size="icon" variant="ghost" className="h-8 w-8 text-green-600" onClick={() => handleApprove(expense.id)}>
+                        <Button size="icon" variant="outline" className="h-8 w-8 border-green-200 bg-green-50 text-green-700 hover:bg-green-100 dark:border-green-800 dark:bg-green-950 dark:text-green-400 dark:hover:bg-green-900" onClick={() => handleApprove(expense.id)}>
                           <Check className="h-4 w-4" />
                         </Button>
-                        <Button size="icon" variant="ghost" className="h-8 w-8 text-red-600" onClick={() => handleReject(expense.id)}>
+                        <Button size="icon" variant="outline" className="h-8 w-8 border-red-200 bg-red-50 text-red-700 hover:bg-red-100 dark:border-red-800 dark:bg-red-950 dark:text-red-400 dark:hover:bg-red-900" onClick={() => handleReject(expense.id)}>
                           <X className="h-4 w-4" />
                         </Button>
                       </div>

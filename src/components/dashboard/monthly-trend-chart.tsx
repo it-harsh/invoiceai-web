@@ -13,6 +13,15 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+const tooltipStyle = {
+  backgroundColor: "var(--card)",
+  borderColor: "var(--border)",
+  borderRadius: "8px",
+  color: "var(--card-foreground)",
+  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+  padding: "8px 12px",
+};
+
 export function MonthlyTrendChart() {
   const { data, isLoading } = useMonthlyTrend();
 
@@ -53,7 +62,7 @@ export function MonthlyTrendChart() {
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={months}>
-              <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
               <XAxis
                 dataKey="month"
                 tickFormatter={(v) => {
@@ -61,13 +70,21 @@ export function MonthlyTrendChart() {
                   const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
                   return months[parseInt(m) - 1] || v;
                 }}
-                className="text-xs"
+                tick={{ fill: "var(--muted-foreground)", fontSize: 12 }}
+                tickLine={false}
+                axisLine={{ stroke: "var(--border)" }}
               />
               <YAxis
                 tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
-                className="text-xs"
+                tick={{ fill: "var(--muted-foreground)", fontSize: 12 }}
+                tickLine={false}
+                axisLine={{ stroke: "var(--border)" }}
               />
               <Tooltip
+                contentStyle={tooltipStyle}
+                labelStyle={{ color: "var(--muted-foreground)" }}
+                itemStyle={{ color: "var(--card-foreground)" }}
+                cursor={{ fill: "var(--muted)", opacity: 0.3 }}
                 formatter={(value) =>
                   new Intl.NumberFormat("en-US", {
                     style: "currency",
@@ -75,7 +92,7 @@ export function MonthlyTrendChart() {
                   }).format(Number(value))
                 }
               />
-              <Bar dataKey="amount" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="amount" fill="var(--chart-1)" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
