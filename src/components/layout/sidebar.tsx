@@ -30,7 +30,7 @@ export function Sidebar() {
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" });
     clearStore();
-    router.push(ROUTES.home);
+    window.location.href = ROUTES.home;
   }
 
   return (
