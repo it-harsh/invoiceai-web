@@ -20,6 +20,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta name="theme-color" content="#f8f8f8" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#191919" media="(prefers-color-scheme: dark)" />
+      </head>
       <body className={`${inter.className} antialiased`}>
         <Providers>{children}</Providers>
       </body>
