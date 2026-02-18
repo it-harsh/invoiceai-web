@@ -6,6 +6,7 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { Header } from "@/components/layout/header";
 import { useAuthStore } from "@/lib/store";
 import { ROUTES } from "@/lib/constants";
+import { AssistantChatButton } from "@/components/assistant/assistant-chat-button";
 
 export default function DashboardLayout({
   children,
@@ -48,6 +49,7 @@ export default function DashboardLayout({
         <Header />
         <main className="flex-1 p-6">{children}</main>
       </div>
+      <AssistantChatButton />
     </div>
   );
 }

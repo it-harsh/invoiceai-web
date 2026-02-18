@@ -32,7 +32,15 @@ export async function proxyToBackend(
   const url = new URL(request.url);
   const queryString = url.search;
 
-  const res = await backendFetch(`${backendPath}${queryString}`, options);
+  let res: Response;
+  try {
+    res = await backendFetch(`${backendPath}${queryString}`, options);
+  } catch {
+    return Response.json(
+      { error: "Service unavailable", message: "Could not reach the backend server" },
+      { status: 503 }
+    );
+  }
 
   const contentType = res.headers.get("content-type") || "";
 

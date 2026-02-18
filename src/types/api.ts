@@ -112,3 +112,17 @@ export interface ApiError {
   message: string;
   details?: Record<string, string>;
 }
+
+export interface ChatMessageEntry {
+  role: "user" | "assistant";
+  content: string;
+}
+
+export interface AssistantChatRequest {
+  message: string;
+  history: ChatMessageEntry[];
+}
+
+export interface AssistantChatResponse {
+  reply: string;
+}

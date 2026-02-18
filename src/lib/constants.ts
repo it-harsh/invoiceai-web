@@ -33,4 +33,7 @@ export const API_ROUTES = {
     monthlyTrend: "/api/dashboard/monthly-trend",
     topVendors: "/api/dashboard/top-vendors",
   },
+  assistant: {
+    chat: "/api/assistant/chat",
+  },
 } as const;

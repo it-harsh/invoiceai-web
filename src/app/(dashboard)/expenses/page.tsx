@@ -98,7 +98,8 @@ export default function ExpensesPage() {
     try {
       const res = await fetch("/api/expenses/export");
       if (!res.ok) {
-        toast.error("Export failed — no data to export or server error");
+        const errorData = await res.json().catch(() => null);
+        toast.error(errorData?.message || "Export failed — server error");
         return;
       }
       const blob = await res.blob();
