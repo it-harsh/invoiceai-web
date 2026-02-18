@@ -7,7 +7,7 @@ import { Sidebar } from "./sidebar";
 
 export function Header() {
   return (
-    <header className="flex h-16 items-center border-b bg-card px-4 md:hidden">
+    <header className="flex h-16 items-center border-b bg-sidebar px-4 md:hidden">
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="ghost" size="icon">

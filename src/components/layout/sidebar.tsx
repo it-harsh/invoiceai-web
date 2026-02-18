@@ -34,11 +34,12 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="hidden md:flex md:w-64 md:flex-col border-r bg-card">
-      <div className="flex h-16 items-center px-6 border-b">
+    <aside className="hidden md:flex md:w-64 md:flex-col border-r bg-sidebar">
+      <div className="flex h-16 items-center justify-between px-6 border-b">
         <Link href={ROUTES.dashboard} className="text-xl font-bold">
           Invoice<span className="text-primary">AI</span>
         </Link>
+        <ThemeToggle />
       </div>
 
       <nav className="flex-1 space-y-1 p-4">
@@ -64,9 +65,6 @@ export function Sidebar() {
       </nav>
 
       <div className="border-t p-4">
-        <div className="flex items-center justify-between mb-3 px-3">
-          <ThemeToggle />
-        </div>
         <div className="flex items-center gap-3 mb-3 px-3">
           <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-sm font-medium text-primary">
             {user?.fullName?.charAt(0) || "U"}
