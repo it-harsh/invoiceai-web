@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# InvoiceAI — Frontend
+
+Modern dashboard UI for AI-powered invoice & expense management.
+
+## Tech Stack
+
+- **Framework:** Next.js 15 (App Router)
+- **Language:** TypeScript (strict mode)
+- **Styling:** Tailwind CSS v4 + shadcn/ui
+- **Charts:** Recharts
+- **Data Fetching:** TanStack React Query
+- **Client State:** Zustand
+- **Deployment:** Vercel
+
+## Features
+
+- **Dashboard** — Summary cards, spend-by-category chart, monthly trend chart, budget progress widget
+- **Expenses** — Full CRUD, search/filter, approve/reject workflow, duplicate badges, CSV bulk import, email export
+- **Invoices** — Upload to R2 via presigned URLs, AI extraction status tracking
+- **Vendors** — Auto-populated vendor directory, edit default category
+- **Recurring Expenses** — Create/manage recurring expense templates
+- **Tax Reports** — Date-range tax summary by category and by vendor
+- **Expense Policies** — Define spending rules, view violations
+- **Budget Tracking** — Monthly limits per category, color-coded progress bars (green/amber/red)
+- **Audit Logs** — Read-only log viewer with entity type + date range filters
+- **Categories** — Custom category management with color picker
+- **AI Assistant** — Floating chat panel powered by Gemini
+- **Auth** — Login/register forms, httpOnly cookie-based JWT
+- **Landing Page** — Marketing page with feature cards, pricing, testimonials
+
+## Architecture
+
+```
+Browser → Next.js API Routes (BFF proxy) → Spring Boot Backend
+```
+
+- The browser **never** calls the Java backend directly
+- Next.js API routes inject auth tokens from httpOnly cookies
+- All data fetching uses React Query with query key-based cache invalidation
+- 14 API proxy route files, 11 custom hooks, 30+ TypeScript interfaces
+
+## Pages (12+)
+
+| Route | Description |
+|---|---|
+| `/` | Landing page (marketing) |
+| `/login`, `/register` | Authentication |
+| `/dashboard` | Main dashboard with charts + budget progress |
+| `/expenses` | Expense list with filters, bulk import, export |
+| `/invoices` | Invoice list with upload |
+| `/vendors` | Vendor directory |
+| `/recurring-expenses` | Recurring expense templates |
+| `/reports/tax-summary` | Tax summary report |
+| `/settings/categories` | Category management |
+| `/settings/policies` | Expense policies + violations |
+| `/settings/budgets` | Budget limits + progress |
+| `/settings/audit-logs` | Audit log viewer |
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Install dependencies
+pnpm install
+
+# Set environment variables
+cp .env.example .env.local
+# Edit .env.local with your BACKEND_URL
+
+# Run dev server
+pnpm dev    # http://localhost:3000
+
+# Build for production
+pnpm build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# .env.local
+BACKEND_URL=http://localhost:8080    # Spring Boot backend
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Related
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Backend:** [invoiceai-api](https://github.com/it-harsh/invoiceai-api) — Spring Boot 3.5 + Java 21

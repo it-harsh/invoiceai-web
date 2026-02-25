@@ -3,6 +3,7 @@
 import { SummaryCards } from "@/components/dashboard/summary-cards";
 import { SpendByCategoryChart } from "@/components/dashboard/spend-by-category-chart";
 import { MonthlyTrendChart } from "@/components/dashboard/monthly-trend-chart";
+import { BudgetProgress } from "@/components/dashboard/budget-progress";
 
 export default function DashboardPage() {
   return (
@@ -13,6 +14,7 @@ export default function DashboardPage() {
         <SpendByCategoryChart />
         <MonthlyTrendChart />
       </div>
+      <BudgetProgress />
     </div>
   );
 }

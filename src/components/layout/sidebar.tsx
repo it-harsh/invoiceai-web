@@ -7,6 +7,9 @@ import {
   LayoutDashboard,
   Receipt,
   FileText,
+  Store,
+  BarChart3,
+  Repeat,
   Settings,
   LogOut,
 } from "lucide-react";
@@ -19,6 +22,9 @@ const navItems = [
   { href: ROUTES.dashboard, label: "Dashboard", icon: LayoutDashboard },
   { href: ROUTES.expenses, label: "Expenses", icon: Receipt },
   { href: ROUTES.invoices, label: "Invoices", icon: FileText },
+  { href: ROUTES.vendors, label: "Vendors", icon: Store },
+  { href: ROUTES.recurring, label: "Recurring", icon: Repeat },
+  { href: ROUTES.reports.taxSummary, label: "Reports", icon: BarChart3 },
   { href: ROUTES.settings.categories, label: "Settings", icon: Settings },
 ];
 

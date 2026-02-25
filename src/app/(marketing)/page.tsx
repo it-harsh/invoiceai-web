@@ -2,16 +2,17 @@ import Link from "next/link";
 import {
   ArrowRight,
   BarChart3,
-  Building2,
   CheckCircle,
   Cpu,
-  Download,
   FileText,
+  Repeat,
   Shield,
   Sparkles,
   Star,
+  Target,
   Tags,
   Upload,
+  Wallet,
   Zap,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -36,34 +37,34 @@ const features = [
       "Upload any invoice and our AI instantly extracts vendor names, amounts, dates, tax info, and line items with 99%+ accuracy.",
   },
   {
-    icon: BarChart3,
-    title: "Real-Time Dashboard",
+    icon: Wallet,
+    title: "Budget Tracking",
     description:
-      "Beautiful charts and analytics give you instant visibility into spending trends, top categories, and month-over-month comparisons.",
-  },
-  {
-    icon: Tags,
-    title: "Smart Categorization",
-    description:
-      "Expenses are automatically categorized by AI. Create custom categories to match your business workflow perfectly.",
-  },
-  {
-    icon: Building2,
-    title: "Multi-Organization",
-    description:
-      "Manage expenses across multiple businesses or departments from a single account with role-based access control.",
-  },
-  {
-    icon: Download,
-    title: "One-Click Export",
-    description:
-      "Export your expense data to CSV anytime for seamless integration with your accounting software or tax preparation.",
+      "Set monthly spending limits per category or overall. Get automatic email alerts when you hit 80% or exceed your budget.",
   },
   {
     icon: Shield,
-    title: "Bank-Grade Security",
+    title: "Expense Policies",
     description:
-      "End-to-end encryption, secure cloud storage on Cloudflare R2, and httpOnly JWT tokens keep your financial data safe.",
+      "Define spending rules — max amounts, required fields, category limits. Violations are flagged instantly with email notifications.",
+  },
+  {
+    icon: Repeat,
+    title: "Recurring Expenses",
+    description:
+      "Automate subscription tracking. Set up recurring expenses and they're auto-created on schedule — weekly, monthly, or yearly.",
+  },
+  {
+    icon: BarChart3,
+    title: "Tax Reports & Analytics",
+    description:
+      "Real-time dashboard, tax summaries by category and vendor, monthly trends, and CSV/email export for tax season.",
+  },
+  {
+    icon: Target,
+    title: "Duplicate Detection",
+    description:
+      "Smart duplicate detection flags potential double entries by matching vendor, amount, and date — no more paying twice.",
   },
 ];
 

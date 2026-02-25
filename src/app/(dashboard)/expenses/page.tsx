@@ -32,7 +32,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
-import { CheckCircle, XCircle, Search, Download, Plus, Loader2 } from "lucide-react";
+import { CheckCircle, XCircle, Search, Download, Mail, Plus, Loader2, Copy } from "lucide-react";
 import { toast } from "sonner";
 import type { Category } from "@/types/api";
 
@@ -119,11 +119,35 @@ export default function ExpensesPage() {
     }
   }
 
+  async function handleEmailExport() {
+    try {
+      const res = await fetch("/api/expenses/export-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          status: status || undefined,
+          search: search || undefined,
+        }),
+      });
+      if (!res.ok) {
+        toast.error("Failed to send email export");
+        return;
+      }
+      toast.success("Export email sent — check your inbox");
+    } catch {
+      toast.error("Failed to send email export");
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Expenses</h1>
         <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={handleEmailExport}>
+            <Mail className="h-4 w-4 mr-2" />
+            Email Export
+          </Button>
           <Button variant="outline" size="sm" onClick={handleExport} disabled={exporting}>
             {exporting ? (
               <Loader2 className="h-4 w-4 mr-2 animate-spin" />
@@ -270,7 +294,17 @@ export default function ExpensesPage() {
               data?.content?.map((expense) => (
                 <TableRow key={expense.id}>
                   <TableCell className="text-sm">{expense.date}</TableCell>
-                  <TableCell className="font-medium">{expense.vendorName}</TableCell>
+                  <TableCell className="font-medium">
+                    <div className="flex items-center gap-2">
+                      {expense.vendorName}
+                      {expense.isDuplicate && (
+                        <Badge variant="outline" className="text-amber-600 border-amber-300 dark:text-amber-400 dark:border-amber-700">
+                          <Copy className="h-3 w-3 mr-1" />
+                          Duplicate
+                        </Badge>
+                      )}
+                    </div>
+                  </TableCell>
                   <TableCell>
                     {expense.category ? (
                       <div className="flex items-center gap-2">
