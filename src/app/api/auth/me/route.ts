@@ -2,38 +2,30 @@ import { getTokens } from "@/lib/auth";
 import { backendFetch } from "@/lib/backend-client";
 
 export async function GET() {
-  const { accessToken } = await getTokens();
+  const { accessToken, orgId } = await getTokens();
 
   if (!accessToken) {
     return Response.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  // Decode JWT payload to get user info (without calling backend)
   try {
-    const payload = JSON.parse(
-      Buffer.from(accessToken.split(".")[1], "base64").toString()
-    );
+    const res = await backendFetch("/users/me", {
+      token: accessToken,
+      orgId: orgId,
+    });
 
-    // Check expiry
-    if (payload.exp * 1000 < Date.now()) {
-      return Response.json({ error: "Token expired" }, { status: 401 });
+    if (!res.ok) {
+      const error = await res.json();
+      return Response.json(error, { status: res.status });
     }
 
-    // Get orgs from backend
-    const res = await backendFetch("/organizations", {
-      token: accessToken,
-    });
-
-    const orgData = res.ok ? await res.json() : { organizations: [] };
+    const data = await res.json();
 
     return Response.json({
-      user: {
-        id: payload.sub,
-        email: payload.email,
-      },
-      organizations: orgData.organizations || [],
+      user: data.user,
+      organizations: data.organizations,
     });
   } catch {
-    return Response.json({ error: "Invalid token" }, { status: 401 });
+    return Response.json({ error: "Failed to fetch user" }, { status: 500 });
   }
 }

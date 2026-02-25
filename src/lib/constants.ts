@@ -21,6 +21,9 @@ export const ROUTES = {
     members: "/settings/members",
   },
   pricing: "/pricing",
+  verifyEmail: "/verify-email",
+  forgotPassword: "/forgot-password",
+  resetPassword: "/reset-password",
 } as const;
 
 export const API_ROUTES = {
@@ -30,6 +33,10 @@ export const API_ROUTES = {
     refresh: "/api/auth/refresh",
     logout: "/api/auth/logout",
     me: "/api/auth/me",
+    verifyEmail: "/api/auth/verify-email",
+    resendVerification: "/api/auth/resend-verification",
+    forgotPassword: "/api/auth/forgot-password",
+    resetPassword: "/api/auth/reset-password",
   },
   expenses: "/api/expenses",
   invoices: "/api/invoices",

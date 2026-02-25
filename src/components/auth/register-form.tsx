@@ -48,7 +48,7 @@ export function RegisterForm() {
       }
 
       setAuth(result.user, result.organizations);
-      router.push(ROUTES.dashboard);
+      router.push(ROUTES.verifyEmail);
     } catch {
       setError("Something went wrong. Please try again.");
     }

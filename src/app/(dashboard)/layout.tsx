@@ -26,6 +26,11 @@ export default function DashboardLayout({
         return res.json();
       })
       .then((data) => {
+        // Redirect unverified users to verify-email page
+        if (!data.user.emailVerified) {
+          router.push(ROUTES.verifyEmail);
+          return;
+        }
         setAuth(data.user, data.organizations);
       })
       .catch(() => {

@@ -48,6 +48,13 @@ export function LoginForm() {
       }
 
       setAuth(result.user, result.organizations);
+
+      // Redirect unverified users to verify-email page
+      if (!result.user.emailVerified) {
+        router.push(ROUTES.verifyEmail);
+        return;
+      }
+
       router.push(ROUTES.dashboard);
     } catch {
       setError("Something went wrong. Please try again.");
@@ -105,6 +112,15 @@ export function LoginForm() {
           <Button type="submit" className="w-full" disabled={isSubmitting}>
             {isSubmitting ? "Signing in..." : "Sign in"}
           </Button>
+
+          <div className="text-center">
+            <Link
+              href={ROUTES.forgotPassword}
+              className="text-sm text-muted-foreground hover:text-primary hover:underline"
+            >
+              Forgot your password?
+            </Link>
+          </div>
 
           <p className="text-center text-sm text-muted-foreground">
             Don&apos;t have an account?{" "}
